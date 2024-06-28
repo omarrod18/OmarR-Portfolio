@@ -1,129 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Weather Update Article</title>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="AuthorName">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="css/tooplate-ben-resume-style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
-<body data-spy="scroll" data-target="#navbarNav" data-offset="50">
-    <nav class="navbar navbar-expand-lg">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                Weather Updates
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a href="#intro" class="nav-link smoothScroll">Introduction</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#article" class="nav-link smoothScroll">Article</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#weather" class="nav-link smoothScroll">Weather Update</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#contact" class="nav-link smoothScroll">Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <section class="weather section-padding" id="weather">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-12">
-                    <h3 class="mb-4">Check the Current Weather</h3>
-                    <form id="weatherForm">
-                        <div class="form-group">
-                            <label for="city">Enter city name:</label>
-                            <input type="text" id="city" name="city" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Get Weather</button>
-                    </form>
-                    <div id="weatherResult" class="mt-4"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="contact section-padding" id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-12">
-                    <h3 class="my-4 pt-4 pt-lg-0">Get in Touch</h3>
-                    <form action="mailto:omar.rod1124@gmail.com.com" method="post" class="contact-form webform" role="form">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="cf-name" id="cf-name" placeholder="Your Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" name="cf-email" id="cf-email" placeholder="Your Email">
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="5" name="cf-message" id="cf-message" placeholder="Your Message"></textarea>
-                        </div>
-                        <button type="submit" class="form-control" id="submit-button" name="submit">Send</button>
-                    </form>
-                </div>
-                <div class="mx-auto col-lg-4 col-md-6 col-12">
-                    <h3 class="my-4 pt-4 pt-lg-0">Contact Details</h3>
-                    <p class="mb-1">706-588-7422</p>
-                    <p><a href="mailto:omar.rod1124@gmail.com">omar.rod1124@gmail.com</a></p>
-                    <ul class="social-links mt-2">
-                        <li><a href="#" class="fab fa-facebook-f"></a></li>
-                        <li><a href="#" class="fab fa-twitter"></a></li>
-                        <li><a href="#" class="fab fa-linkedin"></a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/smoothscroll.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/custom.js"></script>
+<body>
+    <div class="container">
+        <h1>Check the Current Weather</h1>
+        <form id="weatherForm">
+            <input type="text" id="city" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+        </form>
+        <div id="weatherResult"></div>
+    </div>
     <script>
         document.getElementById('weatherForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const city = document.getElementById('city').value;
-            
-            fetch('https://main--cerulean-begonia-6e6e3b.netlify.app/weather', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `city=${city}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById('weatherResult').innerHTML = `<p>${data.error}</p>`;
-                } else {
-                    document.getElementById('weatherResult').innerHTML = `
-                        <p>Weather in ${data.city}:</p>
-                        <p>Temperature: ${data.temperature}°C</p>
-                        <p>Humidity: ${data.humidity}%</p>
-                        <p>Pressure: ${data.pressure} hPa</p>
-                        <p>Description: ${data.description}</p>
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+
+            fetch(`/api/weather?city=${city}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('weatherResult');
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <p>Weather in ${data.city}:</p>
+                            <p>Temperature: ${data.temperature}°C</p>
+                            <p>Humidity: ${data.humidity}%</p>
+                            <p>Pressure: ${data.pressure} hPa</p>
+                            <p>Description: ${data.description}</p>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     </script>
 </body>
 </html>
+
